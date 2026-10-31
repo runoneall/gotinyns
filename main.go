@@ -3,6 +3,7 @@ package main
 import (
 	"gotinyns/db"
 	"gotinyns/records"
+	"gotinyns/server"
 	"os"
 	"os/signal"
 
@@ -18,6 +19,8 @@ func main() {
 
 	records.Sync()
 	go records.SyncJob()
+
+	go server.Listen()
 
 	<-sigInterrupt
 }
