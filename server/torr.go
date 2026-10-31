@@ -29,28 +29,18 @@ func toRR(qname string, rec records.Record) dns.RR {
 	switch rec.Type {
 
 	case dns.TypeA:
-		rr := &dns.A{Hdr: hdr}
-
-		if ip := net.ParseIP(string(rec.Value)); ip != nil {
-			rr.A = ip.To4()
-
-		} else {
+		if len(rec.Value) != 4 {
 			return nil
 		}
 
-		return rr
+		return &dns.A{Hdr: hdr, A: net.IP(rec.Value)}
 
 	case dns.TypeAAAA:
-		rr := &dns.AAAA{Hdr: hdr}
-
-		if ip := net.ParseIP(string(rec.Value)); ip != nil {
-			rr.AAAA = ip.To16()
-
-		} else {
+		if len(rec.Value) != 16 {
 			return nil
 		}
 
-		return rr
+		return &dns.AAAA{Hdr: hdr, AAAA: net.IP(rec.Value)}
 
 	case dns.TypeCNAME:
 		return &dns.CNAME{Hdr: hdr, Target: ensureDot(string(rec.Value))}
